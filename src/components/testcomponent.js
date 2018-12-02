@@ -36,11 +36,11 @@ class TestComponent extends Component {
         <hr />
         <br />
         <p>
-          Files uploaded on the server:{" "}
+          Files uploaded recently:
           <strong>{this.props.test.files.join()} </strong>
         </p>
         <p>
-          Current message on the server :<strong> {this.props.test.msg}</strong>{" "}
+          Current message on the server :<strong> {this.props.test.msg}</strong>
         </p>
       </div>
     );
