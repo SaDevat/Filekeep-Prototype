@@ -1,20 +1,19 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
-import {database} from "./config/firebase";
-import {storage} from "./config/firebase";
+import TestComponent from "./components/testcomponent";
+import Header from "./components/header";
+
+import { BrowserRouter, Route } from "react-router-dom";
 
 class App extends Component {
   render() {
-
-
-
     return (
-      <div >
-
-        <h1>New App</h1>
-
-
-      </div>
+      <BrowserRouter>
+        <div>
+          <Route path="/" component={Header} />
+          <Route path="/firebase-test" exact component={TestComponent} />
+        </div>
+      </BrowserRouter>
     );
   }
 }
