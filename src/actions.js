@@ -46,3 +46,49 @@ export const changenode = nodename => {
     dispatch({ type: "changenode", payload: nodename });
   };
 };
+
+export const writenewtodb = (node, e) => {
+  return dispatch => {
+    if (e.key === "Enter") {
+      console.log(node);
+      var newpushkey = database.child(node + "/children").push().key;
+      var updates = {};
+      updates[node + "/children/" + newpushkey] = {
+        title: e.target.value
+      };
+      database.update(updates);
+      e.target.value = "";
+    }
+
+    dispatch({ type: "writenewtodb" });
+  };
+};
+
+export const uploadnewtostr = (node, e) => {
+  return dispatch => {
+    var file = e.target.files[0];
+    var newpushkey = database.child(node).push().key;
+    var updates = {};
+    updates[node + "/files/" + newpushkey] = {
+      name: file.name
+    };
+    database.update(updates);
+    storage
+      .child("files/" + node + "/" + newpushkey)
+      .put(file)
+      .then(function() {
+        storage
+          .child("files/" + node + "/" + newpushkey)
+          .getDownloadURL()
+          .then(function(url) {
+            var urlupdate = {};
+            urlupdate[node + "/files/" + newpushkey] = {
+              download: url,
+              name: file.name
+            };
+            database.update(urlupdate);
+          });
+      });
+    e.target.value = "";
+  };
+};
