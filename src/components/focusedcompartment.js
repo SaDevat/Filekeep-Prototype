@@ -2,37 +2,31 @@ import React, { Component } from "react";
 
 import { connect } from "react-redux";
 import * as actions from "../actions";
+import uuid from "uuid/v4";
 
 class Focus extends Component {
-  makearray(json) {
-    const immdivs = Object.keys(json);
+  rendermyshit(json, changenode) {
+    let node = this.props.node;
+    let nodepath = node.split("/");
 
-    let divarray = [];
-    for (let i in immdivs) {
-      let array1 = [immdivs[i]];
-      let array2 = Object.keys(json[immdivs[i]]);
-      if (typeof json[immdivs[i]] === "object") {
-        array1.push(array2);
-      }
-      divarray.push(array1);
+    let backbutton = <span />;
+    if (nodepath.length > 1) {
+      backbutton = (
+        <button onClick={() => changenode(nodepath.slice(0, -2).join("/"))}>
+          Back
+        </button>
+      );
     }
-
-    return divarray;
-  }
-
-  rendermyshit(json) {
-    const displayarray = this.makearray(json);
-
-    let name = this.props.node.split("/");
-    name = name[name.length - 1];
 
     return (
       <div>
-        <h1>{name}</h1>
-        {displayarray.map(function(maincompartment) {
+        <h1>
+          {json.title} {backbutton}
+        </h1>
+        {Object.keys(json.children).map(function(id) {
           return (
             <div
-              key={maincompartment[0]}
+              key={id}
               style={{
                 background: "dodgerblue",
                 display: "inline-block",
@@ -41,23 +35,32 @@ class Focus extends Component {
                 margin: "20px"
               }}
             >
-              <p>{maincompartment[0]}</p>
-              {maincompartment[1].map(function(subcompartment) {
-                return (
-                  <div
-                    key={subcompartment}
-                    style={{
-                      background: "salmon",
-                      display: "inline-block",
-                      padding: "5px",
-                      width: "100px",
-                      margin: "5px"
-                    }}
-                  >
-                    <p>{subcompartment}</p>
-                  </div>
-                );
-              })}
+              <button
+                onClick={() => changenode(node + "/children/" + id)}
+                style={{ display: "block" }}
+                disabled={
+                  json.children[id].hasOwnProperty("children") ? false : true
+                }
+              >
+                {json.children[id].title}
+              </button>
+              {json.children[id].hasOwnProperty("children") &&
+                Object.keys(json.children[id].children).map(function(subid) {
+                  return (
+                    <div
+                      key={subid}
+                      style={{
+                        background: "salmon",
+                        display: "inline-block",
+                        padding: "5px",
+                        width: "100px",
+                        margin: "5px"
+                      }}
+                    >
+                      <p>{json.children[id].children[subid].title}</p>
+                    </div>
+                  );
+                })}
             </div>
           );
         })}
@@ -66,7 +69,7 @@ class Focus extends Component {
   }
 
   componentDidMount() {
-    this.props.syncjsonauto(this.props.node);
+    this.props.syncjsonauto(this.props.node, this.props.node);
   }
 
   componentWillReceiveProps(newprop) {
@@ -76,7 +79,12 @@ class Focus extends Component {
   }
 
   render() {
-    return <div>{this.rendermyshit(this.props.json)}</div>;
+    return (
+      <div>
+        {this.props.json &&
+          this.rendermyshit(this.props.json, this.props.changenode)}
+      </div>
+    );
   }
 }
 

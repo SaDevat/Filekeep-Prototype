@@ -34,15 +34,15 @@ export const testsync = msg => {
 
 export const syncjsonauto = (node, oldnode) => {
   return async dispatch => {
-    database.child("json/" + oldnode).off();
-    database.child("json/" + node).on("value", function(snapshot) {
+    database.child(oldnode).off();
+    database.child(node).on("value", function(snapshot) {
       dispatch({ type: "jsonsyncauto", payload: snapshot.val() });
     });
   };
 };
 
-export const changenode = () => {
+export const changenode = nodename => {
   return dispatch => {
-    dispatch({ type: "changenode" });
+    dispatch({ type: "changenode", payload: nodename });
   };
 };

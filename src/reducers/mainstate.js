@@ -1,10 +1,6 @@
-const reducer = (state = { currentnode: "main" }, action) => {
+const reducer = (state = { currentnode: "Main" }, action) => {
   if (action.type === "changenode") {
-    if (state.currentnode === "main") {
-      return { ...state, currentnode: "main/one" };
-    } else {
-      return { ...state, currentnode: "main" };
-    }
+    return { ...state, currentnode: action.payload };
   }
   return state;
 };

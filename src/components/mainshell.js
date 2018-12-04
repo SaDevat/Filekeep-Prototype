@@ -9,8 +9,6 @@ class MainShell extends Component {
   render() {
     return (
       <div>
-        <button onClick={this.props.changenode}>Change Node </button>
-        <p>Current Node: {this.props.main.currentnode} </p>
         <Focus node={this.props.main.currentnode} />
       </div>
     );

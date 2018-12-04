@@ -10,6 +10,7 @@ class Header extends Component {
         <Link to="/">Home</Link>
         <span> | </span>
         <Link to="/firebase-test">Firebase Test</Link>
+        <hr />
       </div>
     );
   }
