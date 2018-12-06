@@ -54,13 +54,33 @@ export const writenewtodb = (node, e) => {
       var newpushkey = database.child(node + "/children").push().key;
       var updates = {};
       updates[node + "/children/" + newpushkey] = {
-        title: e.target.value
+        title: e.target.value,
+        active: true,
+        focus: false
       };
       database.update(updates);
       e.target.value = "";
     }
 
     dispatch({ type: "writenewtodb" });
+  };
+};
+
+export const editnameindb = (node, e) => {
+  return dispatch => {
+    if (e.key === "Enter") {
+      var updates = {};
+      updates[node + "/title"] = e.target.value;
+      database.update(updates);
+    }
+  };
+};
+
+export const editnameindbf = (node, e) => {
+  return dispatch => {
+    var updates = {};
+    updates[node + "/title"] = e.target.value;
+    database.update(updates);
   };
 };
 
@@ -90,5 +110,13 @@ export const uploadnewtostr = (node, e) => {
           });
       });
     e.target.value = "";
+  };
+};
+
+export const setstatus = (status, node, identifier) => {
+  return dispatch => {
+    var updates = {};
+    updates["/" + identifier] = status;
+    database.child(node).update(updates);
   };
 };

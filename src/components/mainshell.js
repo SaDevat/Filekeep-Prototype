@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 
 import { connect } from "react-redux";
 import * as actions from "../actions";
@@ -8,9 +9,12 @@ import Focus from "./focusedcompartment";
 class MainShell extends Component {
   render() {
     return (
-      <div>
-        <Focus node={this.props.main.currentnode} />
-      </div>
+      <Router>
+        <Route
+          path="/"
+          component={() => <Focus node={this.props.main.currentnode} />}
+        />
+      </Router>
     );
   }
 }

@@ -1,14 +1,30 @@
 import React, { Component } from "react";
 
+import { Router, Link } from "react-router-dom";
+
 import { connect } from "react-redux";
 import * as actions from "../actions";
 
+import Subcompartmentupload from "./subcompartmentupload";
+import FilesAttachment from "./filesattachment";
+import Subcompartment from "./subcompartment";
+import StatusButton from "./statusbutton";
+
 class Focus extends Component {
-  rendermyshit(json, changenode, writenewtodb, uploadnewtostr) {
+  rendermyshit(
+    json,
+    changenode,
+    writenewtodb,
+    uploadnewtostr,
+    setstatus,
+    editnameindb,
+    editnameindbf
+  ) {
     let node = this.props.node;
     let nodepath = node.split("/");
 
     let backbutton = <span />;
+    //set backbutton to a button if node != main
     if (nodepath.length > 1) {
       backbutton = (
         <button onClick={() => changenode(nodepath.slice(0, -2).join("/"))}>
@@ -17,167 +33,90 @@ class Focus extends Component {
       );
     }
 
+    let files = [];
+    json.hasOwnProperty("files") &&
+      Object.keys(json.files).map(function(fileid) {
+        files.push(
+          <FilesAttachment
+            key={fileid}
+            fileid={fileid}
+            json={json}
+            big={true}
+          />
+        );
+      });
+
+    let normaltasks = [];
+    let focusedtasks = [];
+    let activetasks = [];
+    Object.keys(json.children).map(function(id) {
+      var s = (
+        <Subcompartment
+          key={id}
+          id={id}
+          changenode={changenode}
+          json={json}
+          node={node}
+          writenewtodb={writenewtodb}
+          uploadnewtostr={uploadnewtostr}
+          setstatus={setstatus}
+          editnameindb={editnameindb}
+          editnameindbf={editnameindbf}
+        />
+      );
+
+      if (json.children[id].focus) {
+        focusedtasks.push(s);
+      } else if (json.children[id].active) {
+        activetasks.push(s);
+      } else {
+        normaltasks.push(s);
+      }
+    });
+
+    let render = [...focusedtasks, ...activetasks, ...files, ...normaltasks];
+
     return (
       <div>
         <h1>
-          {json.title} {backbutton}
+          {json.title} {backbutton}{" "}
+          {node !== "Main" && (
+            <StatusButton
+              active={json.active}
+              focus={json.focus}
+              node={node}
+              setstatus={setstatus}
+            />
+          )}
         </h1>
-        <div
-          style={{
-            background: "dodgerblue",
-            display: "inline-block",
-            padding: "10px",
-            width: "200px",
-            margin: "20px"
-          }}
-        >
-          <p>Add New:</p>
-          <input
-            type="text"
-            onKeyPress={e => writenewtodb(node, e)}
-            style={{ width: "90%" }}
-          />
-          <hr />
-          <p>Add attachment:</p>
-          <input type="file" onChange={e => uploadnewtostr(node, e)} />
-        </div>
 
-        {json.hasOwnProperty("files") &&
-          Object.keys(json.files).map(function(fileid) {
-            return (
-              <div
-                key={fileid}
-                style={{
-                  width: "200px",
-                  height: "200px",
-                  background: "lime",
-                  display: "inline-block",
-                  margin: "20px",
-                  verticalAlign: "center"
-                }}
-              >
-                <a
-                  href={
-                    json.files[fileid].hasOwnProperty("download") &&
-                    json.files[fileid].download
-                  }
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <h3>{json.files[fileid].name}</h3>
-                </a>
-                <img
-                  src={
-                    json.files[fileid].hasOwnProperty("download") &&
-                    json.files[fileid].download
-                  }
-                  alt="Loading..."
-                  style={{ width: "100%" }}
-                />
-              </div>
-            );
-          })}
+        <Subcompartmentupload
+          writenewtodb={writenewtodb}
+          uploadnewtostr={uploadnewtostr}
+          node={node}
+          big={true}
+        />
 
-        {Object.keys(json.children).map(function(id) {
-          return (
-            <div
-              key={id}
-              style={{
-                background: "dodgerblue",
-                display: "inline-block",
-                padding: "10px",
-                width: "200px",
-                margin: "20px"
-              }}
-            >
-              <button
-                onClick={() => changenode(node + "/children/" + id)}
-                style={{ display: "block" }}
-                disabled={
-                  json.children[id].hasOwnProperty("children") ? false : true
-                }
-              >
-                {json.children[id].title}
-              </button>
-              <div
-                style={{
-                  background: "salmon",
-                  display: "inline-block",
-                  padding: "5px",
-                  width: "100px",
-                  margin: "5px"
-                }}
-              >
-                <p>Add New:</p>
-                <input
-                  type="text"
-                  onKeyPress={e => writenewtodb(node + "/children/" + id, e)}
-                  style={{ width: "90%" }}
-                />
-              </div>
-
-              {json.children[id].hasOwnProperty("files") &&
-                Object.keys(json.children[id].files).map(function(fileid) {
-                  return (
-                    <div
-                      key={fileid}
-                      style={{
-                        background: "lime",
-                        display: "inline-block",
-                        padding: "5px",
-                        width: "100px",
-                        margin: "5px"
-                      }}
-                    >
-                      <a
-                        href={
-                          json.children[id].files[fileid].hasOwnProperty(
-                            "download"
-                          ) && json.children[id].files[fileid].download
-                        }
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {json.children[id].files[fileid].name}
-                      </a>
-                    </div>
-                  );
-                })}
-
-              {json.children[id].hasOwnProperty("children") &&
-                Object.keys(json.children[id].children).map(function(subid) {
-                  return (
-                    <div
-                      key={subid}
-                      style={{
-                        background: "salmon",
-                        display: "inline-block",
-                        padding: "5px",
-                        width: "100px",
-                        margin: "5px"
-                      }}
-                    >
-                      <p>{json.children[id].children[subid].title}</p>
-                    </div>
-                  );
-                })}
-            </div>
-          );
+        {render.map(function(el) {
+          return el;
         })}
       </div>
     );
   }
 
+  //Sync json from server at start
   componentDidMount() {
     this.props.syncjsonauto(this.props.node, this.props.node);
   }
 
+  //sync json from server when we shift focus
   componentWillReceiveProps(newprop) {
     if (newprop.node !== this.props.node) {
       this.props.syncjsonauto(newprop.node, this.props.node);
     }
   }
 
+  //rendermyshit function renders the entire dom
   render() {
     return (
       <div>
@@ -186,7 +125,10 @@ class Focus extends Component {
             this.props.json,
             this.props.changenode,
             this.props.writenewtodb,
-            this.props.uploadnewtostr
+            this.props.uploadnewtostr,
+            this.props.setstatus,
+            this.props.editnameindb,
+            this.props.editnameindbf
           )}
       </div>
     );
