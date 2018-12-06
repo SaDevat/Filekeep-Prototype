@@ -68,6 +68,7 @@ const Subcompartment = props => {
         />
       );
       files.push(f);
+      return null;
     });
 
   let tasks = [];
@@ -94,6 +95,8 @@ const Subcompartment = props => {
       } else {
         tasks.push(subsubcom);
       }
+
+      return null;
     });
 
   let render = [...focusedtasks, ...activetasks, ...files, ...tasks];

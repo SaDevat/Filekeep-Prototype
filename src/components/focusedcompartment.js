@@ -61,6 +61,8 @@ class Focus extends Component {
             big={true}
           />
         );
+
+        return null;
       });
 
     let normaltasks = [];
@@ -90,6 +92,8 @@ class Focus extends Component {
         } else {
           normaltasks.push(s);
         }
+
+        return null;
       });
 
     let render = [...focusedtasks, ...activetasks, ...files, ...normaltasks];
@@ -124,7 +128,6 @@ class Focus extends Component {
 
   //Sync json from server at start
   componentDidMount() {
-    console.log("syncing");
     this.props.syncjsonauto(this.props.node);
   }
 

@@ -18,7 +18,6 @@ export const changenode = nodename => {
 export const writenewtodb = (node, e) => {
   return dispatch => {
     if (e.key === "Enter") {
-      console.log(node);
       var newpushkey = database.child(node + "/children").push().key;
       var updates = {};
       updates[node + "/children/" + newpushkey] = {
