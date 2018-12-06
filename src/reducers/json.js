@@ -1,7 +1,8 @@
-const reducer = (state = null, action) => {
+const reducer = (state = {}, action) => {
   if (action.type === "jsonsyncauto") {
     return action.payload;
   }
+
   return state;
 };
 
