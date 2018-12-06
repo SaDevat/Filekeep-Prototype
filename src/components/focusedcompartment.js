@@ -23,27 +23,40 @@ class Focus extends Component {
     }
 
     let node = this.props.node;
+
     let nodepath = node.split("/");
 
     let backbutton = <span />;
     //set backbutton to a button if node != main
-    if (nodepath.length > 1) {
+    if (nodepath.length > 2) {
       backbutton = (
-        <button
-          onClick={() =>
-            changenode(
-              node
-                .split("/")
-                .slice(0, -2)
-                .join("/")
-            )
-          }
-        >
-          Back
-        </button>
+        <div>
+          <button
+            onClick={() =>
+              changenode(
+                node
+                  .split("/")
+                  .slice(0, -2)
+                  .join("/")
+              )
+            }
+          >
+            Back
+          </button>
+
+          <StatusButton
+            active={json.active}
+            focus={json.focus}
+            node={node}
+            setstatus={setstatus}
+          />
+        </div>
       );
     }
 
+    let signoutbutton = <button onClick={this.props.signout}>Signout</button>;
+
+    nodepath.shift();
     nodepath.shift();
 
     for (var i in nodepath) {
@@ -101,15 +114,8 @@ class Focus extends Component {
     return (
       <div>
         <h1>
-          {json.title} {backbutton}{" "}
-          {node !== "Main" && (
-            <StatusButton
-              active={json.active}
-              focus={json.focus}
-              node={node}
-              setstatus={setstatus}
-            />
-          )}
+          {json.title} {backbutton}
+          {node === this.props.main.id + "/Main" && signoutbutton}
         </h1>
 
         <Subcompartmentupload

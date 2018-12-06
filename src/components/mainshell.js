@@ -4,14 +4,15 @@ import { connect } from "react-redux";
 import * as actions from "../actions";
 
 import Focus from "./focusedcompartment";
+import Auth from "./auth";
 
 class MainShell extends Component {
   render() {
-    return (
-      <div>
-        <Focus node={this.props.main.currentnode} />
-      </div>
-    );
+    let content = <Auth />;
+    if (this.props.main.id) {
+      content = <Focus node={this.props.main.currentnode} />;
+    }
+    return <div>{content}</div>;
   }
 }
 

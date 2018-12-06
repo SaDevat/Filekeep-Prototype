@@ -1,8 +1,31 @@
 import { database } from "./config/firebase";
 import { storage } from "./config/firebase";
+import { auth } from "./config/firebase";
+import { provider } from "./config/firebase";
+import { per } from "./config/firebase";
+
+export const handlegoogleauth = () => {
+  return async dispatch => {
+    await auth.setPersistence(per);
+    var result = await auth.signInWithPopup(provider);
+    var updates = {};
+    updates[result.user.uid + "/Main/lastsignin"] = Date.now();
+    updates[result.user.uid + "/Main/title"] = result.user.displayName;
+    database.update(updates);
+    dispatch({ type: "signin", payload: result.user });
+  };
+};
+
+export const signout = () => {
+  return async dispatch => {
+    auth.signOut();
+    dispatch({ type: "signout" });
+  };
+};
 
 export const syncjsonauto = node => {
   return async dispatch => {
+    console.log("syncing with server");
     database.child(node).on("value", function(snapshot) {
       dispatch({ type: "jsonsyncauto", payload: snapshot.val() });
     });
