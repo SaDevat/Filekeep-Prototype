@@ -8,15 +8,6 @@ import Auth from "./auth";
 import Dash from "./dashboard";
 
 class MainShell extends Component {
-  componentDidMount() {
-    if (
-      this.props.main.id &&
-      this.props.main.id !== "null" &&
-      this.props.main.projects === null
-    ) {
-      this.props.syncprojects(this.props.main.id);
-    }
-  }
   render() {
     let content = <Auth />;
     if (this.props.main.id && this.props.main.id !== "null") {
@@ -28,6 +19,8 @@ class MainShell extends Component {
           chooseproject={this.props.chooseproject}
           uid={this.props.main.id}
           shareproject={this.props.shareproject}
+          id={this.props.main.id}
+          syncprojects={this.props.syncprojects}
         />
       );
       if (this.props.main.projectselected) {

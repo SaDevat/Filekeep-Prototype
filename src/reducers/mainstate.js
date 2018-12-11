@@ -4,7 +4,10 @@ const reducer = (
     id: localStorage.getItem("id"),
     projects: null,
     projectselected:
-      localStorage.getItem("selectedproj") === "null" ? false : true
+      localStorage.getItem("selectedproj") === "null" ||
+      localStorage.getItem("selectedproj") === null
+        ? false
+        : true
   },
   action
 ) => {
