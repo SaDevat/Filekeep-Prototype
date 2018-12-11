@@ -19,10 +19,86 @@ export const handlegoogleauth = () => {
       $creationtime: result.user.metadata.creationTime
     });
     mixpanel.track("Signed In");
-    updates[result.user.uid + "/Main/lastsignin"] = Date.now();
-    updates[result.user.uid + "/Main/title"] = result.user.displayName;
+    updates["users/" + result.user.uid + "/lastsignin"] = Date.now();
+    updates["users/" + result.user.uid + "/name"] = result.user.displayName;
+    updates["users/" + result.user.uid + "/email"] = result.user.email;
     database.update(updates);
     dispatch({ type: "signin", payload: result.user });
+  };
+};
+
+export const createnewproject = (uid, e) => {
+  return dispatch => {
+    if (e.key === "Enter") {
+      mixpanel.track("New Project Created");
+      var newpushkey = database.child("projects").push().key;
+      var updates = {};
+      updates["projects/" + newpushkey + "/Main/title"] = e.target.value;
+      updates["projects/" + newpushkey + "/allowedusers/" + uid] = true;
+      updates["users/" + uid + "/projects/" + newpushkey] = e.target.value;
+      database.update(updates);
+      e.target.value = "";
+    }
+  };
+};
+
+export const shareproject = (uid, e) => {
+  return async dispatch => {
+    if (e.key === "Enter") {
+      e.persist();
+      try {
+        var nameofproj = await database
+          .child("projects/" + e.target.value)
+          .once("value");
+        console.log(nameofproj.val());
+      } catch (error) {
+        console.log(error);
+      }
+      if (
+        nameofproj.val() &&
+        nameofproj.val().Main &&
+        nameofproj.val().Main.title &&
+        !nameofproj.val().allowedusers.hasOwnProperty(uid)
+      ) {
+        var updates = {};
+        updates["projects/" + e.target.value + "/allowedusers/" + uid] = true;
+        updates[
+          "users/" + uid + "/projects/" + e.target.value
+        ] = nameofproj.val().Main.title;
+        database.update(updates).then(function() {
+          mixpanel.track("Shared Project");
+        });
+        e.target.value = "";
+      } else if (
+        nameofproj.val() &&
+        nameofproj.val().Main &&
+        nameofproj.val().Main.title &&
+        nameofproj.val().allowedusers.hasOwnProperty(uid)
+      ) {
+        e.target.value = "";
+        e.target.placeholder = "You already have access to that project";
+      } else {
+        e.target.value = "";
+        e.target.placeholder = "Please enter a valid key";
+      }
+    }
+  };
+};
+
+export const syncprojects = uid => {
+  return dispatch => {
+    mixpanel.identify(uid);
+    mixpanel.track("App Opened");
+    database.child("users/" + uid + "/projects").on("value", function(snap) {
+      console.log("syncing projects");
+      dispatch({ type: "syncjsonproject", payload: snap.val() });
+    });
+  };
+};
+
+export const chooseproject = id => {
+  return dispatch => {
+    dispatch({ type: "chooseproject", payload: id });
   };
 };
 
@@ -37,7 +113,7 @@ export const signout = () => {
 export const syncjsonauto = node => {
   return async dispatch => {
     console.log("syncing with server");
-    mixpanel.track("Opened App");
+    mixpanel.track("Opened Project");
     database.child(node).on("value", function(snapshot) {
       dispatch({ type: "jsonsyncauto", payload: snapshot.val() });
     });

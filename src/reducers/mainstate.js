@@ -1,7 +1,10 @@
 const reducer = (
   state = {
-    currentnode: localStorage.getItem("id") + "/Main",
-    id: localStorage.getItem("id")
+    currentnode: "projects/" + localStorage.getItem("selectedproj") + "/Main",
+    id: localStorage.getItem("id"),
+    projects: null,
+    projectselected:
+      localStorage.getItem("selectedproj") === "null" ? false : true
   },
   action
 ) => {
@@ -12,13 +15,38 @@ const reducer = (
     localStorage.setItem("id", action.payload.uid);
     return {
       ...state,
-      id: action.payload.uid,
-      currentnode: action.payload.uid + "/Main"
+      id: action.payload.uid
     };
   }
   if (action.type === "signout") {
     localStorage.setItem("id", null);
-    return { ...state, id: null, currentnode: null };
+    localStorage.setItem("selectedproj", null);
+    return {
+      ...state,
+      id: null,
+      currentnode: null,
+      projectselected: false
+    };
+  }
+  if (action.type === "syncjsonproject") {
+    if (action.payload === null) {
+      return { ...state, projects: {} };
+    }
+    return { ...state, projects: action.payload };
+  }
+  if (action.type === "chooseproject") {
+    localStorage.setItem("selectedproj", action.payload);
+    if (action.payload === null) {
+      return {
+        ...state,
+        projectselected: false
+      };
+    }
+    return {
+      ...state,
+      projectselected: true,
+      currentnode: "projects/" + action.payload + "/Main"
+    };
   }
   return state;
 };

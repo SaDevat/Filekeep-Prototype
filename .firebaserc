@@ -1,5 +1,6 @@
 {
   "projects": {
-    "prototype-1": "filekeep-prototype"
+    "prototype-1": "filekeep-prototype",
+    "default": "filekeep-prototype"
   }
 }

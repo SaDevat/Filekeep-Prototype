@@ -19,7 +19,16 @@ class Focus extends Component {
     editnameindbf
   ) {
     if (!json.hasOwnProperty("title")) {
-      return <div>Loading..</div>;
+      return (
+        <div>
+          <button onClick={this.props.signout} style={{ display: "block" }}>
+            Signout
+          </button>
+          <span>Loading..</span>
+          <br />
+          <span>Signout if it is taking too long to Load</span>
+        </div>
+      );
     }
 
     let node = this.props.node;
@@ -27,8 +36,10 @@ class Focus extends Component {
     let nodepath = node.split("/");
 
     let backbutton = <span />;
+    let signoutbutton = <span />;
+    let backtodash = <span />;
     //set backbutton to a button if node != main
-    if (nodepath.length > 2) {
+    if (nodepath.length > 3) {
       backbutton = (
         <div>
           <button
@@ -53,9 +64,16 @@ class Focus extends Component {
         </div>
       );
     }
+    if (nodepath.length === 3) {
+      signoutbutton = <button onClick={this.props.signout}>Signout</button>;
+      backtodash = (
+        <button onClick={() => this.props.chooseproject(null)}>
+          Back to Dashboard
+        </button>
+      );
+    }
 
-    let signoutbutton = <button onClick={this.props.signout}>Signout</button>;
-
+    nodepath.shift();
     nodepath.shift();
     nodepath.shift();
 
@@ -114,8 +132,7 @@ class Focus extends Component {
     return (
       <div>
         <h1>
-          {json.title} {backbutton}
-          {node === this.props.main.id + "/Main" && signoutbutton}
+          {json.title} {backbutton} {signoutbutton} {backtodash}
         </h1>
 
         <Subcompartmentupload
