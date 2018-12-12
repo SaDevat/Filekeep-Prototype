@@ -1,5 +1,7 @@
 import React from "react";
 
+import "./css/subcompartments.css";
+
 import Subsubcompartment from "./subsubcompartment";
 import Subcompartmentupload from "./subcompartmentupload";
 import FilesAttachment from "./filesattachment";
@@ -38,13 +40,17 @@ const Subcompartment = props => {
   );
 
   let header = (
-    <div>
+    <div className="mb-2">
       <button
         onClick={() => changenode(node + "/children/" + id)}
         style={{ display: "inline-block" }}
+        id="headline"
         disabled={json.children[id].hasOwnProperty("children") ? false : true}
       >
-        {json.children[id].title}
+        {json.children[id].title}{" "}
+        {json.children[id].hasOwnProperty("children") && (
+          <i className="fas fa-arrow-right" />
+        )}
       </button>
 
       <StatusButton
@@ -52,6 +58,7 @@ const Subcompartment = props => {
         focus={json.children[id].focus}
         node={node + "/children/" + id}
         setstatus={setstatus}
+        className="ml-2"
       />
     </div>
   );
@@ -108,15 +115,17 @@ const Subcompartment = props => {
         background: color,
         display: "inline-block",
         padding: "10px",
-        width: "250px",
-        margin: "20px"
+        width: "95%",
+        borderRadius: "3px"
       }}
     >
       {header}
+      <div className="row" id="subsubrenderbox">
+        {render.map(function(el) {
+          return el;
+        })}
+      </div>
       {uploadcomp}
-      {render.map(function(el) {
-        return el;
-      })}
     </div>
   );
 };

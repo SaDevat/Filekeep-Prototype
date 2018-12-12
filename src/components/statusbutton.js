@@ -1,21 +1,27 @@
 import React from "react";
 
+import "./css/statusbuttons.css";
+
 const StatusButton = props => {
   var { setstatus, active, focus, node } = props;
   return (
-    <div>
+    <div className={"d-inline-block " + props.className}>
       <button
         onClick={() => setstatus(!active, node, "active")}
-        style={{ display: "inline-block" }}
+        className="d-inline-block mybutton"
       >
-        {!active ? "Activate" : "Deactivate"}
+        {!active ? (
+          <i className="fas fa-check-double" />
+        ) : (
+          <i className="fas fa-check" />
+        )}
       </button>
 
       <button
         onClick={() => setstatus(!focus, node, "focus")}
-        style={{ display: "inline-block" }}
+        className="d-inline-block mybutton"
       >
-        {!focus ? "Focus" : "Remove Focus"}
+        <i className="fas fa-thumbtack" />
       </button>
     </div>
   );

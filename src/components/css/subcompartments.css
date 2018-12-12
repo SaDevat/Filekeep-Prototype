@@ -1,0 +1,27 @@
+#subsubrenderbox {
+  width: 100%;
+  margin: 0;
+}
+
+#headline {
+  border: none;
+  border-radius: 3px;
+  font-size: 20px;
+  line-height: 23px;
+  padding: 5px;
+  background: rgba(0, 0, 0, 0.1);
+  outline: none !important;
+  cursor: pointer;
+  display: inline-block;
+  text-align: left;
+}
+
+#headline:disabled {
+  color: black;
+  cursor: default;
+}
+
+#headline i {
+  font-size: 10px;
+  vertical-align: middle;
+}

@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 
+import "./css/dash.css";
+
 class Dash extends Component {
   componentDidMount() {
     if (
@@ -23,24 +25,31 @@ class Dash extends Component {
       uid,
       shareproject
     } = this.props;
-    let signoutbutton = <button onClick={signout}>Signout</button>;
+    let signoutbutton = (
+      <button className="signoutbtn" onClick={signout}>
+        Signout
+      </button>
+    );
     return (
-      <div>
+      <div className="container pt-5">
         <h1>Dashboard {signoutbutton}</h1>
+        <hr className="mt-1" />
         <div
           style={{
             background: "salmon",
             display: "inline-block",
             padding: "10px",
             width: "250px",
-            margin: "20px"
+            margin: "20px",
+            borderRadius: "3px"
           }}
+          className="mt-2"
         >
-          <span>Add new project:</span>
           <input
             onKeyPress={e => createnewproject(uid, e)}
             type="text"
             style={{ width: "90%", display: "block" }}
+            placeholder="Add a new Project"
           />
           <hr />
           <span>Enter a ShareId to access a shared project:</span>
@@ -61,13 +70,16 @@ class Dash extends Component {
                   display: "inline-block",
                   padding: "10px",
                   width: "250px",
-                  margin: "20px"
+                  margin: "20px",
+                  borderRadius: "3px"
                 }}
               >
                 <button onClick={() => chooseproject(id)}>
                   {projects[id]}
                 </button>
-                <span>Share this id with teammates: {id}</span>
+                <span>
+                  Share this id with teammates: <strong>{id}</strong>
+                </span>
               </div>
             );
           })}

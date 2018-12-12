@@ -1,40 +1,63 @@
-import React from "react";
+import React, { Component } from "react";
 
-const Subcompartment = props => {
-  var { big, uploadnewtostr, node, writenewtodb } = props;
-  var style;
+import "./css/uploadcompartment.css";
 
-  if (big) {
-    style = {
-      background: "#6A5ACD",
-      display: "inline-block",
-      padding: "10px",
-      width: "200px",
-      margin: "20px"
-    };
-  } else {
-    style = {
-      background: "#6A5ACD",
-      display: "inline-block",
-      padding: "5px",
-      width: "100px",
-      margin: "5px"
-    };
+class Subcompartment extends Component {
+  state = {
+    opened: false
+  };
+
+  render() {
+    var { big, uploadnewtostr, node, writenewtodb } = this.props;
+
+    let button = (
+      <button
+        onClick={() => this.setState({ opened: !this.state.opened })}
+        id="openaddnewbutton"
+      >
+        {this.state.opened ? (
+          <i className="fas fa-times" />
+        ) : (
+          <i className="fas fa-plus" />
+        )}
+      </button>
+    );
+
+    let content = (
+      <div id="addnewcontentbox" className="row">
+        <input
+          type="text"
+          onKeyPress={e => writenewtodb(node, e)}
+          placeholder="Add new compartment"
+          className="col-10"
+        />
+        <div className="col-2">
+          <label id="addattachmentbutton">
+            <input
+              type="file"
+              onChange={e => uploadnewtostr(node, e)}
+              className="hide"
+            />
+            <div>
+              <i className="fas fa-folder-plus" />
+            </div>
+          </label>
+        </div>
+      </div>
+    );
+
+    let render = button;
+    if (this.state.opened) {
+      render = (
+        <div className="text-center">
+          {content}
+          {button}
+        </div>
+      );
+    }
+
+    return <div id="outerdivforuploadcomp">{render}</div>;
   }
-
-  return (
-    <div style={style}>
-      <p>Add New:</p>
-      <input
-        type="text"
-        onKeyPress={e => writenewtodb(node, e)}
-        style={{ width: "90%" }}
-      />
-      <hr />
-      <p>Add attachment:</p>
-      <input type="file" onChange={e => uploadnewtostr(node, e)} />
-    </div>
-  );
-};
+}
 
 export default Subcompartment;

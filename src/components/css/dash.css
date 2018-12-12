@@ -1,0 +1,15 @@
+.signoutbtn {
+  border: none;
+  border-radius: 3px;
+  font-size: 14px;
+  line-height: 15px;
+  height: 23px;
+  margin-right: 3px;
+  padding: 5px;
+  margin-top: 4px;
+  background: salmon;
+  text-align: center;
+  outline: none !important;
+  cursor: pointer;
+  display: inline-block;
+}

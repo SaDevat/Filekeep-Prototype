@@ -1,5 +1,7 @@
 import React from "react";
 
+import "./css/subsubcompartments.css";
+
 import StatusButton from "./statusbutton";
 
 const Subcompartment = props => {
@@ -13,43 +15,35 @@ const Subcompartment = props => {
   }
 
   if (json.children[id].children[subid].focus) {
-    color = "#D2691E";
+    color = "#ffb732";
   }
 
   return (
-    <div
-      key={subid}
-      style={{
-        background: color,
-        display: "inline-block",
-        padding: "5px",
-        width: "100px",
-        margin: "5px"
-      }}
-    >
-      <textarea
-        defaultValue={json.children[id].children[subid].title}
-        onKeyPress={e =>
-          editnameindb(node + "/children/" + id + "/children/" + subid, e)
-        }
-        onBlur={e =>
-          editnameindbf(node + "/children/" + id + "/children/" + subid, e)
-        }
+    <div className="col-lg-6 col-md-12">
+      <div
+        key={subid}
         style={{
-          width: "95%",
-          fontFamily: "inherit",
-          overflow: "hidden",
-          overflowWrap: "break-word",
-          background: "transparent",
-          resize: "auto"
+          background: color
         }}
-      />
-      <StatusButton
-        active={json.children[id].children[subid].active}
-        focus={json.children[id].children[subid].focus}
-        node={node + "/children/" + id + "/children/" + subid}
-        setstatus={setstatus}
-      />
+        id="subsubcompartmentbox"
+      >
+        <textarea
+          defaultValue={json.children[id].children[subid].title}
+          onKeyPress={e =>
+            editnameindb(node + "/children/" + id + "/children/" + subid, e)
+          }
+          onBlur={e =>
+            editnameindbf(node + "/children/" + id + "/children/" + subid, e)
+          }
+          id="subsubtextarea"
+        />
+        <StatusButton
+          active={json.children[id].children[subid].active}
+          focus={json.children[id].children[subid].focus}
+          node={node + "/children/" + id + "/children/" + subid}
+          setstatus={setstatus}
+        />
+      </div>
     </div>
   );
 };

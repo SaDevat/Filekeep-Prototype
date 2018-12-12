@@ -3,10 +3,13 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import * as actions from "../actions";
 
+import "./css/focusedcomp.css";
+
 import Subcompartmentupload from "./subcompartmentupload";
 import FilesAttachment from "./filesattachment";
 import Subcompartment from "./subcompartment";
 import StatusButton from "./statusbutton";
+import MasonryLayout from "./masonry";
 
 class Focus extends Component {
   rendermyshit(
@@ -21,7 +24,11 @@ class Focus extends Component {
     if (!json.hasOwnProperty("title")) {
       return (
         <div>
-          <button onClick={this.props.signout} style={{ display: "block" }}>
+          <button
+            onClick={this.props.signout}
+            style={{ display: "block" }}
+            className="btn btn-primary"
+          >
             Signout
           </button>
           <span>Loading..</span>
@@ -43,6 +50,7 @@ class Focus extends Component {
       backbutton = (
         <div>
           <button
+            id="backbutton"
             onClick={() =>
               changenode(
                 node
@@ -65,9 +73,16 @@ class Focus extends Component {
       );
     }
     if (nodepath.length === 3) {
-      signoutbutton = <button onClick={this.props.signout}>Signout</button>;
+      signoutbutton = (
+        <button className="backbutton changered" onClick={this.props.signout}>
+          Signout
+        </button>
+      );
       backtodash = (
-        <button onClick={() => this.props.chooseproject(null)}>
+        <button
+          className="backbutton"
+          onClick={() => this.props.chooseproject(null)}
+        >
           Back to Dashboard
         </button>
       );
@@ -127,24 +142,32 @@ class Focus extends Component {
         return null;
       });
 
-    let render = [...focusedtasks, ...activetasks, ...files, ...normaltasks];
+    let subuploadcomp = (
+      <Subcompartmentupload
+        key="thisisupload"
+        writenewtodb={writenewtodb}
+        uploadnewtostr={uploadnewtostr}
+        node={node}
+        big={true}
+      />
+    );
+
+    let render = [
+      ...focusedtasks,
+      ...activetasks,
+      ...files,
+      ...normaltasks,
+      subuploadcomp
+    ];
 
     return (
       <div>
         <h1>
           {json.title} {backbutton} {signoutbutton} {backtodash}
         </h1>
-
-        <Subcompartmentupload
-          writenewtodb={writenewtodb}
-          uploadnewtostr={uploadnewtostr}
-          node={node}
-          big={true}
-        />
-
-        {render.map(function(el) {
-          return el;
-        })}
+        <hr className="mt-1" />
+        <div className="mt-1" />
+        <MasonryLayout columns={3} gap={10} render={render} />
       </div>
     );
   }
@@ -164,7 +187,7 @@ class Focus extends Component {
   //rendermyshit function renders the entire dom
   render() {
     return (
-      <div>
+      <div className="container mt-5">
         {this.props.json &&
           this.rendermyshit(
             this.props.json,
