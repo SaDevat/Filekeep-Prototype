@@ -1,6 +1,13 @@
 import React, { Component } from "react";
 
 import "./css/dash.css";
+import "./css/loader.css";
+
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+library.add(faArrowRight);
 
 class Dash extends Component {
   componentDidMount() {
@@ -14,75 +21,70 @@ class Dash extends Component {
   }
   render() {
     if (this.props.projects === null || this.props.projects === "null") {
-      return <span>Loading...</span>;
+      return (
+        <div className="lds-ripple">
+          <div />
+          <div />
+        </div>
+      );
     }
 
     var {
-      signout,
       createnewproject,
       projects,
       chooseproject,
       uid,
       shareproject
     } = this.props;
-    let signoutbutton = (
-      <button className="signoutbtn" onClick={signout}>
-        Signout
-      </button>
-    );
     return (
-      <div className="container pt-5">
-        <h1>Dashboard {signoutbutton}</h1>
-        <hr className="mt-1" />
-        <div
-          style={{
-            background: "salmon",
-            display: "inline-block",
-            padding: "10px",
-            width: "250px",
-            margin: "20px",
-            borderRadius: "3px"
-          }}
-          className="mt-2"
-        >
-          <input
-            onKeyPress={e => createnewproject(uid, e)}
-            type="text"
-            style={{ width: "90%", display: "block" }}
-            placeholder="Add a new Project"
-          />
-          <hr />
-          <span>Enter a ShareId to access a shared project:</span>
-          <input
-            onKeyPress={e => shareproject(uid, e)}
-            type="text"
-            style={{ width: "90%", display: "block" }}
-          />
-        </div>
+      <div>
+        <div className="pt-1 row">
+          <div className="col-lg-3 col-md-4 col-sm-6">
+            <div className="createnewbox">
+              <input
+                onKeyPress={e => createnewproject(uid, e)}
+                type="text"
+                style={{ width: "90%", display: "block" }}
+                placeholder="Add a new Project Name"
+                className="myinput"
+              />
+              <div className="myor">or</div>
+              <input
+                onKeyPress={e => shareproject(uid, e)}
+                type="text"
+                style={{ width: "90%", display: "block" }}
+                placeholder="Add existing project key"
+                className="myinput"
+              />
+              <div className="subtext">Press enter after typing</div>
+            </div>
+          </div>
 
-        {projects &&
-          Object.keys(projects).map(function(id) {
-            return (
-              <div
-                key={id}
-                style={{
-                  background: "dodgerblue",
-                  display: "inline-block",
-                  padding: "10px",
-                  width: "250px",
-                  margin: "20px",
-                  borderRadius: "3px"
-                }}
-              >
-                <button onClick={() => chooseproject(id)}>
-                  {projects[id]}
-                </button>
-                <span>
-                  Share this id with teammates: <strong>{id}</strong>
-                </span>
-              </div>
-            );
-          })}
+          {projects &&
+            Object.keys(projects).map(function(id) {
+              return (
+                <div key={id} className="col-lg-3 col-md-4 col-sm-6">
+                  <div className="createnewbox">
+                    <button
+                      onClick={() => chooseproject(id)}
+                      className="headline"
+                    >
+                      {projects[id]}{" "}
+                      <FontAwesomeIcon
+                        icon="arrow-right"
+                        className="smallarrowicon mr-1"
+                      />
+                    </button>
+
+                    <div className="smallfont">
+                      share this id with teammates to work together:
+                      <strong className="d-block">"{id}"</strong>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+        </div>
       </div>
     );
   }

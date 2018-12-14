@@ -14,3 +14,7 @@
   cursor: pointer;
   display: inline-block;
 }
+
+.mybutton:hover {
+  background: rgba(0, 0, 0, 0.4);
+}

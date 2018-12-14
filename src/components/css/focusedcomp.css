@@ -33,3 +33,13 @@
 .changered {
   background: salmon;
 }
+
+.horizscroll > .row {
+  overflow-x: auto;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+}
+.horizscroll > .row > .col-4 {
+  display: inline-block;
+  float: none;
+}

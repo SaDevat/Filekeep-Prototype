@@ -1,13 +1,22 @@
 import React from "react";
 import { connect } from "react-redux";
 
+import "./css/auth.css";
+
 import * as actions from "../actions";
 
 const Auth = props => {
   return (
     <div>
-      <h1>Please Signin to continue</h1>
-      <button onClick={props.handlegoogleauth}>Signin With Google</button>
+      <div className="authimg">
+        <img
+          alt="Sign-in with Google"
+          src="./button.png"
+          onClick={props.handlegoogleauth}
+        />
+        <div className="subtext">More options coming soon!</div>
+      </div>
+      <div className="backgrnd" />
     </div>
   );
 };

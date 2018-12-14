@@ -2,6 +2,18 @@ import React from "react";
 
 import "./css/statusbuttons.css";
 
+import { library } from "@fortawesome/fontawesome-svg-core";
+import {
+  faCheck,
+  faCheckDouble,
+  faThumbtack
+} from "@fortawesome/free-solid-svg-icons";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+library.add(faCheck);
+library.add(faCheckDouble);
+library.add(faThumbtack);
+
 const StatusButton = props => {
   var { setstatus, active, focus, node } = props;
   return (
@@ -11,9 +23,9 @@ const StatusButton = props => {
         className="d-inline-block mybutton"
       >
         {!active ? (
-          <i className="fas fa-check-double" />
+          <FontAwesomeIcon icon="check-double" />
         ) : (
-          <i className="fas fa-check" />
+          <FontAwesomeIcon icon="check" />
         )}
       </button>
 
@@ -21,7 +33,7 @@ const StatusButton = props => {
         onClick={() => setstatus(!focus, node, "focus")}
         className="d-inline-block mybutton"
       >
-        <i className="fas fa-thumbtack" />
+        <FontAwesomeIcon icon="thumbtack" />
       </button>
     </div>
   );

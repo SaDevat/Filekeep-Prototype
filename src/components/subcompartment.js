@@ -7,6 +7,12 @@ import Subcompartmentupload from "./subcompartmentupload";
 import FilesAttachment from "./filesattachment";
 import StatusButton from "./statusbutton";
 
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+library.add(faArrowRight);
+
 const Subcompartment = props => {
   var {
     id,
@@ -34,6 +40,7 @@ const Subcompartment = props => {
   let uploadcomp = (
     <Subcompartmentupload
       uploadnewtostr={uploadnewtostr}
+      type="task"
       writenewtodb={writenewtodb}
       node={node + "/children/" + id}
     />
@@ -49,7 +56,7 @@ const Subcompartment = props => {
       >
         {json.children[id].title}{" "}
         {json.children[id].hasOwnProperty("children") && (
-          <i className="fas fa-arrow-right" />
+          <FontAwesomeIcon icon="arrow-right" className="smallarrowicon" />
         )}
       </button>
 
@@ -106,7 +113,12 @@ const Subcompartment = props => {
       return null;
     });
 
-  let render = [...focusedtasks, ...activetasks, ...files, ...tasks];
+  let render = [
+    ...focusedtasks.reverse(),
+    ...activetasks.reverse(),
+    ...files.reverse(),
+    ...tasks.reverse()
+  ];
 
   return (
     <div
@@ -120,6 +132,11 @@ const Subcompartment = props => {
       }}
     >
       {header}
+      {!json.children[id].hasOwnProperty("children") && (
+        <div className="subtext">
+          Create your first sub-division by clicking the plus button
+        </div>
+      )}
       <div className="row" id="subsubrenderbox">
         {render.map(function(el) {
           return el;

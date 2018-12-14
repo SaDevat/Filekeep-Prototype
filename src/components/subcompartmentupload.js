@@ -2,13 +2,25 @@ import React, { Component } from "react";
 
 import "./css/uploadcompartment.css";
 
+import { library } from "@fortawesome/fontawesome-svg-core";
+import {
+  faPlus,
+  faTimes,
+  faFolderPlus
+} from "@fortawesome/free-solid-svg-icons";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+library.add(faPlus);
+library.add(faTimes);
+library.add(faFolderPlus);
+
 class Subcompartment extends Component {
   state = {
     opened: false
   };
 
   render() {
-    var { big, uploadnewtostr, node, writenewtodb } = this.props;
+    var { uploadnewtostr, node, writenewtodb, type } = this.props;
 
     let button = (
       <button
@@ -16,9 +28,9 @@ class Subcompartment extends Component {
         id="openaddnewbutton"
       >
         {this.state.opened ? (
-          <i className="fas fa-times" />
+          <FontAwesomeIcon icon="times" />
         ) : (
-          <i className="fas fa-plus" />
+          <FontAwesomeIcon icon="plus" />
         )}
       </button>
     );
@@ -27,21 +39,26 @@ class Subcompartment extends Component {
       <div id="addnewcontentbox" className="row">
         <input
           type="text"
-          onKeyPress={e => writenewtodb(node, e)}
-          placeholder="Add new compartment"
+          onKeyPress={e => writenewtodb(node, type, e)}
+          placeholder="Add new compartment name"
           className="col-10"
         />
-        <div className="col-2">
-          <label id="addattachmentbutton">
-            <input
-              type="file"
-              onChange={e => uploadnewtostr(node, e)}
-              className="hide"
-            />
-            <div>
-              <i className="fas fa-folder-plus" />
-            </div>
-          </label>
+        {type === "task" && (
+          <div className="col-2">
+            <label id="addattachmentbutton">
+              <input
+                type="file"
+                onChange={e => uploadnewtostr(node, e)}
+                className="hide"
+              />
+              <div>
+                <FontAwesomeIcon icon="folder-plus" />
+              </div>
+            </label>
+          </div>
+        )}
+        <div className="col-12 subtext text-light">
+          press enter after typing
         </div>
       </div>
     );

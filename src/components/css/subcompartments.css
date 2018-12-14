@@ -16,12 +16,17 @@
   text-align: left;
 }
 
+#headline:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
 #headline:disabled {
   color: black;
   cursor: default;
+  background: rgba(0, 0, 0, 0);
 }
 
-#headline i {
+.smallarrowicon {
   font-size: 10px;
   vertical-align: middle;
 }

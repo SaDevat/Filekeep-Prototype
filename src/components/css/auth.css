@@ -1,0 +1,25 @@
+.authimg {
+  text-align: center;
+  margin-top: 100px;
+}
+
+.authimg img {
+  width: 300px;
+  cursor: pointer;
+}
+
+.authimg .subtext {
+  font-size: 15px;
+}
+.headlineauth {
+  width: 100%;
+  text-align: center;
+  color: #f8f9fa;
+  margin-top: 50px;
+  margin-bottom: 50px;
+  font-size: 60px;
+}
+
+* {
+  font-family: Quicksand !important;
+}

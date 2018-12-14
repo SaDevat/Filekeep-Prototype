@@ -1,10 +1,40 @@
 import { database } from "./config/firebase";
+import { connected } from "./config/firebase";
 import { storage } from "./config/firebase";
 import { auth } from "./config/firebase";
 import { provider } from "./config/firebase";
 import { per } from "./config/firebase";
 
 import mixpanel from "./config/mixpanel";
+
+export const seterrordisplay = e => {
+  return dispatch => {
+    dispatch({ type: "seterrordisplay", payload: e });
+  };
+};
+
+export const handleoffline = () => {
+  return dispatch => {
+    connected.on("value", snap => {
+      if (snap.val()) {
+        dispatch({
+          type: "seterrordisplay",
+          payload: { message: "Welcome back!", status: "g" }
+        });
+      } else {
+        dispatch({
+          type: "seterrordisplay",
+          payload: {
+            message:
+              "Disconnected from the server. You can continue working, changes will be synced when you are online. Please check your internet connection",
+            status: "r",
+            persist: true
+          }
+        });
+      }
+    });
+  };
+};
 
 export const handlegoogleauth = () => {
   return async dispatch => {
@@ -30,14 +60,22 @@ export const handlegoogleauth = () => {
 export const createnewproject = (uid, e) => {
   return dispatch => {
     if (e.key === "Enter") {
-      mixpanel.track("New Project Created");
-      var newpushkey = database.child("projects").push().key;
-      var updates = {};
-      updates["projects/" + newpushkey + "/Main/title"] = e.target.value;
-      updates["projects/" + newpushkey + "/allowedusers/" + uid] = true;
-      updates["users/" + uid + "/projects/" + newpushkey] = e.target.value;
-      database.update(updates);
-      e.target.value = "";
+      try {
+        mixpanel.track("New Project Created");
+        var newpushkey = database.child("projects").push().key;
+        var updates = {};
+        updates["projects/" + newpushkey + "/Main/title"] = e.target.value;
+        updates["projects/" + newpushkey + "/allowedusers/" + uid] = true;
+        updates["users/" + uid + "/projects/" + newpushkey] = e.target.value;
+        database.update(updates);
+        e.target.value = "";
+      } catch (error) {
+        seterrordisplay({
+          message:
+            "Cannot connect to the server, please ensure you have a working internet connection",
+          status: "r"
+        });
+      }
     }
   };
 };
@@ -50,9 +88,11 @@ export const shareproject = (uid, e) => {
         var nameofproj = await database
           .child("projects/" + e.target.value)
           .once("value");
-        console.log(nameofproj.val());
       } catch (error) {
-        console.log(error);
+        dispatch({
+          type: "seterrordisplay",
+          payload: { message: "cannot retrieve the project at this time" }
+        });
       }
       if (
         nameofproj.val() &&
@@ -77,9 +117,17 @@ export const shareproject = (uid, e) => {
       ) {
         e.target.value = "";
         e.target.placeholder = "You already have access to that project";
+        dispatch({
+          type: "seterrordisplay",
+          payload: { message: "You already have access to that project" }
+        });
       } else {
         e.target.value = "";
         e.target.placeholder = "Please enter a valid key";
+        dispatch({
+          type: "seterrordisplay",
+          payload: { message: "Please enter a valid key", status: "r" }
+        });
       }
     }
   };
@@ -90,7 +138,7 @@ export const syncprojects = uid => {
     mixpanel.identify(uid);
     mixpanel.track("App Opened");
     database.child("users/" + uid + "/projects").on("value", function(snap) {
-      console.log("syncing projects");
+      console.log("Welcome to Filekeep!");
       dispatch({ type: "syncjsonproject", payload: snap.val() });
     });
   };
@@ -112,11 +160,16 @@ export const signout = () => {
 
 export const syncjsonauto = node => {
   return async dispatch => {
-    console.log("syncing with server");
     mixpanel.track("Opened Project");
     database.child(node).on("value", function(snapshot) {
       dispatch({ type: "jsonsyncauto", payload: snapshot.val() });
     });
+  };
+};
+
+export const unsyncjson = node => {
+  return dispatch => {
+    database.child(node).off();
   };
 };
 
@@ -127,78 +180,118 @@ export const changenode = nodename => {
   };
 };
 
-export const writenewtodb = (node, e) => {
+export const writenewtodb = (node, type, e) => {
   return dispatch => {
     if (e.key === "Enter") {
-      mixpanel.track("Created new Compartment");
-      var newpushkey = database.child(node + "/children").push().key;
-      var updates = {};
-      updates[node + "/children/" + newpushkey] = {
-        title: e.target.value,
-        active: true,
-        focus: false
-      };
-      database.update(updates);
-      e.target.value = "";
+      try {
+        mixpanel.track("Created new Compartment");
+        var newpushkey = database.child(node + "/children").push().key;
+        var updates = {};
+        updates[node + "/children/" + newpushkey] = {
+          title: e.target.value,
+          active: true,
+          focus: false,
+          type: type
+        };
+        database.update(updates);
+        e.target.value = "";
+      } catch (error) {
+        dispatch({
+          type: "seterrordisplay",
+          payload: { message: "Cannot write to server, please try again" }
+        });
+      }
     }
-
-    dispatch({ type: "writenewtodb" });
   };
 };
 
 export const editnameindb = (node, e) => {
   return dispatch => {
     if (e.key === "Enter") {
-      var updates = {};
-      updates[node + "/title"] = e.target.value;
-      database.update(updates);
+      try {
+        var updates = {};
+        updates[node + "/title"] = e.target.value;
+        database.update(updates);
+      } catch (error) {
+        dispatch({
+          type: "seterrordisplay",
+          payload: { message: "Cannot write to server, please try again" }
+        });
+      }
     }
   };
 };
 
 export const editnameindbf = (node, e) => {
   return dispatch => {
-    var updates = {};
-    updates[node + "/title"] = e.target.value;
-    database.update(updates);
+    try {
+      var updates = {};
+      updates[node + "/title"] = e.target.value;
+      database.update(updates);
+    } catch (error) {
+      dispatch({
+        type: "seterrordisplay",
+        payload: { message: "Cannot write to server, please try again" }
+      });
+    }
   };
 };
 
 export const uploadnewtostr = (node, e) => {
   return dispatch => {
-    mixpanel.track("File Upload");
-    var file = e.target.files[0];
-    var newpushkey = database.child(node).push().key;
-    var updates = {};
-    updates[node + "/files/" + newpushkey] = {
-      name: file.name
-    };
-    database.update(updates);
-    storage
-      .child("files/" + node + "/" + newpushkey)
-      .put(file)
-      .then(function() {
-        storage
-          .child("files/" + node + "/" + newpushkey)
-          .getDownloadURL()
-          .then(function(url) {
-            var urlupdate = {};
-            urlupdate[node + "/files/" + newpushkey] = {
-              download: url,
-              name: file.name
-            };
-            database.update(urlupdate);
-          });
+    try {
+      mixpanel.track("File Upload");
+      var file = e.target.files[0];
+      var newpushkey = database.child(node).push().key;
+      var updates = {};
+      updates[node + "/files/" + newpushkey] = {
+        name: file.name
+      };
+      database.update(updates);
+      storage
+        .child("files/" + node + "/" + newpushkey)
+        .put(file)
+        .then(function() {
+          storage
+            .child("files/" + node + "/" + newpushkey)
+            .getDownloadURL()
+            .then(function(url) {
+              var urlupdate = {};
+              urlupdate[node + "/files/" + newpushkey] = {
+                download: url,
+                name: file.name
+              };
+              database.update(urlupdate);
+            });
+        });
+      e.target.value = "";
+    } catch (error) {
+      dispatch({
+        type: "seterrordisplay",
+        payload: {
+          message: "Error in uploading the file at the moment",
+          status: "r"
+        }
       });
-    e.target.value = "";
+    }
   };
 };
 
 export const setstatus = (status, node, identifier) => {
   return dispatch => {
-    mixpanel.track("Set Active/ Focus");
-    var updates = {};
-    updates["/" + identifier] = status;
-    database.child(node).update(updates);
+    try {
+      mixpanel.track("Set Active/ Focus");
+      var updates = {};
+      updates["/" + identifier] = status;
+      database.child(node).update(updates);
+    } catch (err) {
+      dispatch({
+        type: "seterrordisplay",
+        payload: {
+          message: "Cannot complete the action at this time",
+          status: "r"
+        }
+      });
+    }
   };
 };
