@@ -6,14 +6,14 @@ class Error extends Component {
   };
 
   componentDidMount() {
-    if (this.props.persist !== true) {
+    if (this.props.duration) {
       setTimeout(() => {
         this.props.seterrordisplay(false);
-      }, 5000);
+      }, this.props.duration);
     } else {
       setTimeout(() => {
         this.props.seterrordisplay(false);
-      }, 10000);
+      }, 3000);
     }
   }
 

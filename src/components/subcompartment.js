@@ -133,7 +133,7 @@ const Subcompartment = props => {
     >
       {header}
       {!json.children[id].hasOwnProperty("children") && (
-        <div className="subtext">
+        <div className="subtext whitespacewrap">
           Create your first sub-division by clicking the plus button
         </div>
       )}

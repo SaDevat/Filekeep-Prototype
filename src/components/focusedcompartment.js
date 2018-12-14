@@ -176,7 +176,7 @@ class Focus extends Component {
             status={this.props.main.error.status}
             message={this.props.main.error.message}
             error={this.props.main.error.error}
-            persist={this.props.main.error.persist}
+            duration={this.props.main.error.duration}
             seterrordisplay={this.props.seterrordisplay}
           />
         )}
@@ -194,7 +194,14 @@ class Focus extends Component {
         <div className="container horizscroll">
           <div className="row text-center">
             {rendercontainer.map(el => {
-              return <div className="col-4 text-left">{el}</div>;
+              return (
+                <div
+                  className="col-12 col-sm-6 col-md-4 text-left"
+                  key={el.key}
+                >
+                  {el}
+                </div>
+              );
             })}
           </div>
         </div>

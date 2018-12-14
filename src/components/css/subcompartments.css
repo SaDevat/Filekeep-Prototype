@@ -30,3 +30,7 @@
   font-size: 10px;
   vertical-align: middle;
 }
+
+.whitespacewrap {
+  white-space: normal;
+}

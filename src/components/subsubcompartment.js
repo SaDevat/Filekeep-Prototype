@@ -42,6 +42,7 @@ const Subcompartment = props => {
           focus={json.children[id].children[subid].focus}
           node={node + "/children/" + id + "/children/" + subid}
           setstatus={setstatus}
+          className="ml-0"
         />
       </div>
     </div>

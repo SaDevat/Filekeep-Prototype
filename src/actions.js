@@ -19,7 +19,7 @@ export const handleoffline = () => {
       if (snap.val()) {
         dispatch({
           type: "seterrordisplay",
-          payload: { message: "Welcome back!", status: "g" }
+          payload: { message: "Welcome back!", status: "g", duration: 1500 }
         });
       } else {
         dispatch({
@@ -28,7 +28,7 @@ export const handleoffline = () => {
             message:
               "Disconnected from the server. You can continue working, changes will be synced when you are online. Please check your internet connection",
             status: "r",
-            persist: true
+            duration: 10000
           }
         });
       }
@@ -147,6 +147,10 @@ export const syncprojects = uid => {
 export const chooseproject = id => {
   return dispatch => {
     dispatch({ type: "chooseproject", payload: id });
+    dispatch({
+      type: "seterrordisplay",
+      payload: { message: "Loading...", duration: 1000 }
+    });
   };
 };
 

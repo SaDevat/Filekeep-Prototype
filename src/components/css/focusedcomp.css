@@ -38,8 +38,13 @@
   overflow-x: auto;
   flex-wrap: nowrap;
   white-space: nowrap;
+  padding-bottom: 8px;
 }
 .horizscroll > .row > .col-4 {
   display: inline-block;
   float: none;
+}
+
+#subsubcompartmentbox {
+  white-space: normal;
 }
