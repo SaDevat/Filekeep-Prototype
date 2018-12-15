@@ -6,6 +6,7 @@ import Subsubcompartment from "./subsubcompartment";
 import Subcompartmentupload from "./subcompartmentupload";
 import FilesAttachment from "./filesattachment";
 import StatusButton from "./statusbutton";
+import Assign from "./assignteam";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
@@ -23,7 +24,9 @@ const Subcompartment = props => {
     uploadnewtostr,
     setstatus,
     editnameindb,
-    editnameindbf
+    editnameindbf,
+    assignuser,
+    team
   } = props;
 
   var color;
@@ -47,7 +50,7 @@ const Subcompartment = props => {
   );
 
   let header = (
-    <div className="mb-2">
+    <div>
       <button
         onClick={() => changenode(node + "/children/" + id)}
         style={{ display: "inline-block" }}
@@ -132,6 +135,17 @@ const Subcompartment = props => {
       }}
     >
       {header}
+      <Assign
+        team={team}
+        assignuser={assignuser}
+        node={node + "/children/" + id}
+        currentusers={
+          json.children[id].hasOwnProperty("currentusers")
+            ? json.children[id].currentusers
+            : {}
+        }
+        big={false}
+      />
       {!json.children[id].hasOwnProperty("children") && (
         <div className="subtext whitespacewrap">
           Create your first sub-division by clicking the plus button

@@ -10,6 +10,7 @@ import Subcompartmentupload from "./subcompartmentupload";
 import FilesAttachment from "./filesattachment";
 import Subcompartment from "./subcompartment";
 import MasonryLayout from "./masonry";
+import Assign from "./assignteam";
 import Error from "./errorcomponent";
 
 class Focus extends Component {
@@ -20,7 +21,8 @@ class Focus extends Component {
     uploadnewtostr,
     setstatus,
     editnameindb,
-    editnameindbf
+    editnameindbf,
+    assignuser
   ) {
     if (!json.hasOwnProperty("title")) {
       return (
@@ -94,7 +96,7 @@ class Focus extends Component {
     let focusedcontainer = [];
     let activecontainer = [];
     json.hasOwnProperty("children") &&
-      Object.keys(json.children).map(function(id) {
+      Object.keys(json.children).map(id => {
         var s = (
           <Subcompartment
             key={id}
@@ -107,6 +109,8 @@ class Focus extends Component {
             setstatus={setstatus}
             editnameindb={editnameindb}
             editnameindbf={editnameindbf}
+            assignuser={assignuser}
+            team={this.props.main.team}
           />
         );
 
@@ -181,7 +185,16 @@ class Focus extends Component {
           />
         )}
         <h1>
-          {json.title} {backbutton}
+          {json.title} {backbutton}{" "}
+          <Assign
+            team={this.props.main.team}
+            assignuser={assignuser}
+            node={node}
+            currentusers={
+              json.hasOwnProperty("currentusers") ? json.currentusers : {}
+            }
+            big={true}
+          />
         </h1>
         {!json.hasOwnProperty("children") && (
           <div className="subtext text-left" style={{ fontSize: "20px" }}>
@@ -222,6 +235,10 @@ class Focus extends Component {
   //Sync json from server at start
   componentDidMount() {
     this.props.syncjsonauto(this.props.node);
+    var nodepath = this.props.node.split("/");
+    nodepath.pop();
+    nodepath.push("allowedusers");
+    this.props.syncteam(nodepath.join("/"));
     window.addEventListener("resize", () => this.updatecolumns(this));
     this.updatecolumns(this);
   }
@@ -254,7 +271,8 @@ class Focus extends Component {
             this.props.uploadnewtostr,
             this.props.setstatus,
             this.props.editnameindb,
-            this.props.editnameindbf
+            this.props.editnameindbf,
+            this.props.assignuser
           )}
       </div>
     );

@@ -62,6 +62,10 @@ const reducer = (
   if (action.type === "seterrordisplay") {
     return { ...state, error: action.payload };
   }
+  if (action.type === "syncteam") {
+    console.log(action.payload);
+    return { ...state, team: action.payload };
+  }
   return state;
 };
 

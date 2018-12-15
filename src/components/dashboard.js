@@ -34,6 +34,7 @@ class Dash extends Component {
       projects,
       chooseproject,
       uid,
+      name,
       shareproject
     } = this.props;
     return (
@@ -42,7 +43,7 @@ class Dash extends Component {
           <div className="col-lg-3 col-md-4 col-sm-6">
             <div className="createnewbox">
               <input
-                onKeyPress={e => createnewproject(uid, e)}
+                onKeyPress={e => createnewproject(uid, name, e)}
                 type="text"
                 style={{ width: "90%", display: "block" }}
                 placeholder="Add a new Project Name"
@@ -50,7 +51,7 @@ class Dash extends Component {
               />
               <div className="myor">or</div>
               <input
-                onKeyPress={e => shareproject(uid, e)}
+                onKeyPress={e => shareproject(uid, name, e)}
                 type="text"
                 style={{ width: "90%", display: "block" }}
                 placeholder="Add existing project key"

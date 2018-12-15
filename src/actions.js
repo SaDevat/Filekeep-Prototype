@@ -13,6 +13,25 @@ export const seterrordisplay = e => {
   };
 };
 
+export const assignuser = (id, name, node, action) => {
+  return dispatch => {
+    try {
+      var update = {};
+      if (action === "add") {
+        update[node + "/currentusers/" + id] = name;
+      } else if (action === "delete") {
+        update[node + "/currentusers/" + id] = null;
+      }
+      database.update(update);
+    } catch (error) {
+      dispatch({
+        type: "seterrordisplay",
+        payload: { message: "Cannot assign users at this moment", status: "r" }
+      });
+    }
+  };
+};
+
 export const handleoffline = () => {
   return dispatch => {
     connected.on("value", snap => {
@@ -57,7 +76,7 @@ export const handlegoogleauth = () => {
   };
 };
 
-export const createnewproject = (uid, e) => {
+export const createnewproject = (uid, name, e) => {
   return dispatch => {
     if (e.key === "Enter") {
       try {
@@ -65,7 +84,7 @@ export const createnewproject = (uid, e) => {
         var newpushkey = database.child("projects").push().key;
         var updates = {};
         updates["projects/" + newpushkey + "/Main/title"] = e.target.value;
-        updates["projects/" + newpushkey + "/allowedusers/" + uid] = true;
+        updates["projects/" + newpushkey + "/allowedusers/" + uid] = name;
         updates["users/" + uid + "/projects/" + newpushkey] = e.target.value;
         database.update(updates);
         e.target.value = "";
@@ -80,7 +99,7 @@ export const createnewproject = (uid, e) => {
   };
 };
 
-export const shareproject = (uid, e) => {
+export const shareproject = (uid, name, e) => {
   return async dispatch => {
     if (e.key === "Enter") {
       e.persist();
@@ -101,7 +120,7 @@ export const shareproject = (uid, e) => {
         !nameofproj.val().allowedusers.hasOwnProperty(uid)
       ) {
         var updates = {};
-        updates["projects/" + e.target.value + "/allowedusers/" + uid] = true;
+        updates["projects/" + e.target.value + "/allowedusers/" + uid] = name;
         updates[
           "users/" + uid + "/projects/" + e.target.value
         ] = nameofproj.val().Main.title;
@@ -167,6 +186,14 @@ export const syncjsonauto = node => {
     mixpanel.track("Opened Project");
     database.child(node).on("value", function(snapshot) {
       dispatch({ type: "jsonsyncauto", payload: snapshot.val() });
+    });
+  };
+};
+
+export const syncteam = node => {
+  return dispatch => {
+    database.child(node).on("value", snap => {
+      dispatch({ type: "syncteam", payload: snap.val() });
     });
   };
 };

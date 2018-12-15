@@ -35,6 +35,7 @@ class MainShell extends Component {
               shareproject={this.props.shareproject}
               id={this.props.main.id}
               syncprojects={this.props.syncprojects}
+              name={this.props.main.name}
             />
           </div>
         </div>
